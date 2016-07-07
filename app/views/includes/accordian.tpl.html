@@ -1,0 +1,96 @@
+<div ng-controller="AccordionDemoCtrl" class="AccordionDemoCtrl">
+	<script type="text/ng-template" id="group-template.html">
+		<div class="panel {{panelClass || 'panel-default'}}">
+			<div class="panel-heading">
+				<h4 class="panel-title" style="color:#fa39c3">
+					<a href tabindex="0" class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading">
+						<span uib-accordion-header ng-class="{'text-muted': isDisabled}">
+							{{heading}}
+						</span>
+					</a>
+				</h4>
+			</div>
+			<div class="panel-collapse collapse" uib-collapse="!isOpen">
+				<div class="panel-body" style="text-align: right" ng-transclude></div>
+			</div>
+		</div>
+	</script>
+
+<!-- 	<p>
+		<button type="button" class="btn btn-default btn-sm" ng-click="status.open = !status.open">Toggle last panel</button>
+		<button type="button" class="btn btn-default btn-sm" ng-click="status.isFirstDisabled = ! status.isFirstDisabled">Enable / Disable first panel</button>
+	</p> -->
+
+<!-- 	<div class="checkbox">
+		<label>
+			<input type="checkbox" ng-model="oneAtATime">
+			Open only one at a time
+		</label>
+	</div> -->
+	<uib-accordion close-others="oneAtATime">
+		<uib-accordion-group heading="1. Shipping Address" is-open="status.isFirstOpen">
+			<form name="shipping">
+				<ng-include src="'views/includes/address.tpl.html'"></ng-include>
+			</form>
+		</uib-accordion-group>
+
+
+		<uib-accordion-group heading="2. Billing Address">
+			<form name="billing">
+				<div class="row">
+					<div class="col-sm-6">
+					 	<div class="checkbox">
+							<label>
+								<input type="checkbox"> Same as shipping
+							</label>
+						</div>
+					</div>
+					<div class="col-sm-6">
+					 	<div class="checkbox">
+							<label>
+								<input type="checkbox"> This is a gift
+							</label>
+						</div>
+					</div>
+				</div>
+				<ng-include src="'views/includes/address.tpl.html'"></ng-include>
+			</form>
+		</uib-accordion-group>
+
+		<uib-accordion-group heading="3. Credit Card">
+			<form name="credit-card">
+				<div class="row">
+					<ng-include src="'views/includes/creditcard.tpl.html'"></ng-include>
+					<!-- <div class="col-sm-6">
+						what exactly goes here?
+					 	<div class="checkbox">
+							<label>
+								<input type="checkbox"> Same as shipping
+							</label>
+						</div>
+					</div>
+					<div class="col-sm-6">
+					  	<div class="checkbox">
+							<label>
+								<input type="checkbox"> This is a gift
+							</label> 
+						</div>
+					</div> -->
+				</div>
+			</form>
+		</uib-accordion-group>
+
+		<uib-accordion-group heading="4. Confirmation">
+			<form name="credit-card">
+				<div class="row">
+					<div class="col-sm-10 col-sm-offset-1">
+					<label>Enter your birthday</label>
+					<ng-include src="'views/includes/datepickerpopup.tpl.html'"></ng-include>
+					<p> I confirm that I am at least 21 years of age and understand that an adult, also 21 years of age or older, must be available to sign for this shipment. I further confirm that I have read and understand the terms of service. And, I understand that sales tax varies by state, so taxes will be calculated at checkout.</p>
+				</div>
+			</form>
+		</uib-accordion-group>
+
+
+	</uib-accordion>
+</div>
