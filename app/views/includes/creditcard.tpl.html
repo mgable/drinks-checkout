@@ -15,23 +15,23 @@
 		</div>
 		<div class="row">
 			<div class="col-sm-6">
-				<div class="form-group">
-					<label for="exampleInputEmail1">Credit Card Number</label>
-					<input type="text" class="form-control" id="exampleInputEmail1" placeholder="">
+				<div class="form-group" ng-class="{'has-error': hasError('creditcard','creditcardnumber'), 'has-success': hasSuccess('creditcard', 'creditcardnumber')}">
+					<label for="creditcardnumber">Number</label>
+					<input type="text" ng-model="creditcard.number" name="creditcardnumber" class="form-control" id="creditcardnumber" placeholder="" ng-required=true tabindex="31">
 				</div>
 				<div class="form-group">
-					<label for="exampleInputPassword1">Credit Card Expiration</label>
-					<ng-include src="'views/includes/months.tpl.html'"></ng-include>
+					<label for="creditcardexpirationmonth">Expiration Month</label>
+					<months tab-index=33></months>
 				</div>
 			</div>
 			<div class="col-sm-6">
-			  	<div class="form-group">
-					<label for="exampleInputEmail1">Security Code</label>
-					<input type="text" class="form-control" id="exampleInputEmail1" placeholder="">
+			  	<div class="form-group" ng-class="{'has-error': hasError('creditcard','securitycode'), 'has-success': hasSuccess('creditcard', 'securitycode')}">
+					<label for="securitycode">Security Code</label>
+					<input type="text" ng-model="creditcard.security" name="securitycode" class="form-control" id="securitycode" placeholder="" ng-required=true tabindex="32">
 				</div>
 				<div class="form-group">
-					<label for="exampleInputPassword1">Credit Card Expiration</label>
-					<ng-include src="'views/includes/years.tpl.html'"></ng-include>
+					<label for="creditcardexpirationyear">Expiration Year</label>
+					<years tab-index=34></years>
 				</div>
 			</div>
 		</div>

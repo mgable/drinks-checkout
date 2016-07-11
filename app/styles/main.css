@@ -4,5 +4,11 @@ body {
   body .holder {
     background-color: white;
     padding: 10px; }
+  body a, body a:hover {
+    text-decoration: none; }
+  body .ok {
+    color: #3c763d; }
+  body iframe.error {
+    border: 2px solid red; }
 
 /*# sourceMappingURL=main.css.map */

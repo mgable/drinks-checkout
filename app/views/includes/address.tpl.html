@@ -1,49 +1,52 @@
 <div class="row">
 	<div class="col-sm-6">
-		<div class="form-group">
-			<label for="exampleInputEmail1">First Name</label>
-			<input type="text" class="form-control" id="exampleInputEmail1" placeholder="First Name">
+	
+
+		<div class="form-group" ng-class="{'has-error': hasError('first-name'), 'has-success': hasSuccess('first-name')}">
+			<label for="firstname">First Name</label>
+			<input focus type="text" name="first-name" class="form-control" id="firstname" placeholder="First Name" ng-required=true ng-model="address.firstname" ng-minlength="1" ng-maxlength="256" tabindex="{{+tabstart}}">
 		</div>
-		<div class="form-group">
-			<label for="exampleInputPassword1">Street Address Line 1</label>
-			<input type="test" class="form-control" id="exampleInputPassword1" placeholder="123 Main St.">
+
+		<div class="form-group" ng-class="{'has-error': hasError('street1'), 'has-success': hasSuccess('street1')}">
+			<label for="street1">Street Address Line 1</label>
+			<input type="text" name="street1" class="form-control" id="street1" placeholder="123 Main St." ng-required=true ng-model="address.street1" ng-minlength="1" ng-maxlength="256" tabindex="{{+tabstart + 2}}">
 		</div>
 		
-		<div class="form-group">
-			<label for="exampleInputPassword1">City</label>
-			<input type="test" class="form-control" id="exampleInputPassword1" placeholder="e.g, Anytown">
+		<div class="form-group" ng-class="{'has-error': hasError('city'), 'has-success': hasSuccess('city')}">
+			<label for="city">City</label>
+			<input type="text" name="city" class="form-control" id="city" placeholder="e.g, Anytown" ng-required=true ng-model="address.city" ng-minlength="1" ng-maxlength="256" tabindex="{{+tabstart + 4}}">
 		</div>
 
-		<div class="form-group">
-			<label for="exampleInputPassword1">Zip Code</label>
-			<input type="text" class="form-control" id="exampleInputPassword1" placeholder="e.g., 12345">
+		<div class="form-group" ng-class="{'has-error': hasError('zip'), 'has-success': hasSuccess('zip')}">
+			<label for="zip">Zip Code</label>
+			<input type="text" name="zip" class="form-control" id="zip" placeholder="e.g., 12345" ng-required=true ng-model="address.zip" ng-minlength="5" ng-maxlength="10" ng-pattern="'^\\d{5}(\\-\\d{4})?$'" tabindex="{{+tabstart + 6}}">
 		</div>
 
-		<div class="form-group">
-			<label for="exampleInputPassword1">Phone</label>
-			<input type="text" class="form-control" id="exampleInputPassword1" placeholder="XXX-XXX-XXXX">
+		<div class="form-group" ng-class="{'has-error': hasError('phone'), 'has-success': hasSuccess('phone')}">
+			<label for="phone">Phone</label>
+			<input type="tel" name="phone" class="form-control" id="phone" placeholder="XXX-XXX-XXXX" ng-required=true ng-model="address.phone" ng-minlength="10" ng-maxlength="12" ng-pattern="'^\\d{3}[^\\w\\d]?\\d{3}[^\\w\\d]?\\d{4}$'" tabindex="{{+tabstart + 8}}">
 		</div>
 
 	</div>
 
 	<div class="col-sm-6">
-		<div class="form-group">
-			<label for="exampleInputEmail1">Last Name</label>
-			<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Last Name">
+		<div class="form-group" ng-class="{'has-error': hasError('last-name'), 'has-success': hasSuccess('last-name')}">
+			<label for="lastname">Last Name</label>
+			<input type="text" name="last-name" class="form-control" id="lastname" placeholder="Last Name" ng-required=true ng-model="address.lastname" ng-minlength="1" ng-maxlength="256" tabindex="{{+tabstart + 1}}">
 		</div>
-		<div class="form-group">
-			<label for="exampleInputPassword1">Street Address Line 2</label>
-			<input type="text" class="form-control" id="exampleInputPassword1" placeholder="e.g, Apt. 123">
+		<div class="form-group" ng-class="{'has-error': hasError('street2'), 'has-success': hasSuccess('street2')}">
+			<label for="street2">Street Address Line 2</label>
+			<input type="text" name="street2" class="form-control" id="street2" placeholder="e.g, Apt. 123" ng-required=true ng-model="address.street2" ng-minlength="1" ng-maxlength="256" tabindex="{{+tabstart + 3}}">
 		</div>
 		
-		<div class="form-group">
-			<label for="exampleInputPassword1">State</label>
-			<ng-include src="'views/includes/states.tpl.html'"></ng-include>
+		<div class="form-group" ng-class="{'has-error': hasError('state'), 'has-success': hasSuccess('state')}">
+			<label for="state">State</label>
+			<states tab-index=6></states>
 		</div>
 
-		<div class="form-group">
-			<label for="exampleInputPassword1">Email</label>
-			<input type="text" class="form-control" id="exampleInputPassword1" placeholder="e.g., user@provider.com">
+		<div class="form-group" ng-class="{'has-error': hasError('email'), 'has-success': hasSuccess('email')}">
+			<label for="email">Email</label>
+			<input type="email" name="email" class="form-control" id="email" placeholder="e.g., user@provider.com" ng-required=true ng-model="address.email" tabindex="{{+tabstart + 7}}"/>		
 		</div>
 	</div>
 </div>

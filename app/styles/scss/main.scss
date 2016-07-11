@@ -10,4 +10,15 @@ body {
 	.AccordionDemoCtrl {
 
 	}
+	a, a:hover {
+		text-decoration: none;
+	}
+
+	.ok {
+		color: #3c763d;
+	}
+
+	iframe.error {
+		border: 2px solid red;
+	}
 }

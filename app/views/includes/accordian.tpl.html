@@ -1,9 +1,9 @@
 <div ng-controller="AccordionDemoCtrl" class="AccordionDemoCtrl">
-	<script type="text/ng-template" id="group-template.html">
+<!-- 	<script type="text/ng-template" id="group-template.html">
 		<div class="panel {{panelClass || 'panel-default'}}">
-			<div class="panel-heading">
+			<div class="panel-heading">		
 				<h4 class="panel-title" style="color:#fa39c3">
-					<a href tabindex="0" class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading">
+					<a href tabindex="-1" class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading">
 						<span uib-accordion-header ng-class="{'text-muted': isDisabled}">
 							{{heading}}
 						</span>
@@ -14,7 +14,7 @@
 				<div class="panel-body" style="text-align: right" ng-transclude></div>
 			</div>
 		</div>
-	</script>
+	</script> -->
 
 <!-- 	<p>
 		<button type="button" class="btn btn-default btn-sm" ng-click="status.open = !status.open">Toggle last panel</button>
@@ -27,70 +27,103 @@
 			Open only one at a time
 		</label>
 	</div> -->
-	<uib-accordion close-others="oneAtATime">
-		<uib-accordion-group heading="1. Shipping Address" is-open="status.isFirstOpen">
-			<form name="shipping">
-				<ng-include src="'views/includes/address.tpl.html'"></ng-include>
-			</form>
-		</uib-accordion-group>
+	<ng-form name="myform">
+		<uib-accordion close-others="oneAtATime">
 
+			<uib-accordion-group is-open="status.shipping.isOpen" tab-index=0>
+				<form name="shippingForm">
+					<uib-accordion-heading><span ng-show="myform.shippingForm.$invalid">1.</span><span ng-show="myform.shippingForm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Shipping Address</uib-accordion-heading>
 
-		<uib-accordion-group heading="2. Billing Address">
-			<form name="billing">
-				<div class="row">
-					<div class="col-sm-6">
-					 	<div class="checkbox">
-							<label>
-								<input type="checkbox"> Same as shipping
-							</label>
+					<address type="shipping" whichform="shippingForm" tabstart=1></address>
+				</form>
+			</uib-accordion-group>
+
+			<uib-accordion-group is-open="status.billing.isOpen" tab-index=12>
+				<form name="billingForm">
+					<uib-accordion-heading><span ng-show="myform.billingForm.$invalid">2.</span><span ng-show="myform.billingForm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Billing Address</uib-accordion-heading>
+
+					<div class="row">
+						<div class="col-sm-6">
+						 	<div class="checkbox">
+								<label>
+									<input type="checkbox" ng-model="sameAsShipping" tabIndex="15"> Same as shipping
+								</label>
+							</div>
+						</div>
+						<div class="col-sm-6">
+						 	<div class="checkbox">
+								<label>
+									<input type="checkbox" ng-model="isGift" tabIndex="16"> This is a gift
+								</label>
+							</div>
 						</div>
 					</div>
-					<div class="col-sm-6">
-					 	<div class="checkbox">
-							<label>
-								<input type="checkbox"> This is a gift
-							</label>
+					<address type="sameAsShipping ? shipping : billing" whichform="billingForm" tabstart=17></address>
+				</form>
+			</uib-accordion-group>
+
+			<uib-accordion-group is-open="status.creditcard.isOpen" tab-index=30>
+				
+					<uib-accordion-heading><span ng-show="true" x="myform.creditcard.$invalid">3.</span><span ng-show="false" x="myform.creditcard.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Credit Card</uib-accordion-heading>
+
+					<div class="row">
+						<form name="creditcard">
+
+							<iframe frameborder="0" name="vantiv-payframe" src="views/includes/creditcardiframe.html" width="100%" height="260px" id="iframe1" marginheight="0" frameborder="0" ng-class="{'error': missingInformation}"></iframe>
+						</form>
+					</div>
+					<div class="row">
+						<div class="col-sm-10 col-sm-offset-1">
+							<form name="confirm">
+								<label>Enter your birthday</label>
+								<ng-include src="'views/includes/datepickerpopup.tpl.html'"></ng-include>
+								<p> I confirm that I am at least 21 years of age and understand that an adult, also 21 years of age or older, must be available to sign for this shipment. I further confirm that I have read and understand the terms of service. And, I understand that sales tax varies by state, so taxes will be calculated at checkout.</p>
+
+								<div class="alert alert-danger" role="alert" ng-show="isUnderAge">
+									<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+									<span class="sr-only">Error:</span>
+									You must be at least 21 years old to order.
+								</div>
+							</form>
 						</div>
 					</div>
-				</div>
-				<ng-include src="'views/includes/address.tpl.html'"></ng-include>
-			</form>
-		</uib-accordion-group>
+				
+			</uib-accordion-group>
 
-		<uib-accordion-group heading="3. Credit Card">
-			<form name="credit-card">
-				<div class="row">
-					<ng-include src="'views/includes/creditcard.tpl.html'"></ng-include>
-					<!-- <div class="col-sm-6">
-						what exactly goes here?
-					 	<div class="checkbox">
-							<label>
-								<input type="checkbox"> Same as shipping
-							</label>
+<!-- 			myform <pre>{{myform.confirm | json}}</pre> -->
+
+<!-- 			<uib-accordion-group is-open="status.confirm.isOpen" tab-index=40>
+				<form name="confirm">
+					<uib-accordion-heading><span ng-show="myform.confirm.$invalid">4.</span><span ng-show="myform.confirm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Confirmation</uib-accordion-heading>
+
+					<div class="row">
+						<div class="col-sm-10 col-sm-offset-1">
+							<label>Enter your birthday</label>
+							<ng-include src="'views/includes/datepickerpopup.tpl.html'"></ng-include>
+							<p> I confirm that I am at least 21 years of age and understand that an adult, also 21 years of age or older, must be available to sign for this shipment. I further confirm that I have read and understand the terms of service. And, I understand that sales tax varies by state, so taxes will be calculated at checkout.</p>
+
+							<div class="alert alert-danger" role="alert" ng-show="isUnderAge">
+								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+								<span class="sr-only">Error:</span>
+								You must be 21 years old to order.
+							</div>
 						</div>
 					</div>
-					<div class="col-sm-6">
-					  	<div class="checkbox">
-							<label>
-								<input type="checkbox"> This is a gift
-							</label> 
-						</div>
-					</div> -->
-				</div>
-			</form>
-		</uib-accordion-group>
+				</form>
+			</uib-accordion-group> -->
 
-		<uib-accordion-group heading="4. Confirmation">
-			<form name="credit-card">
-				<div class="row">
-					<div class="col-sm-10 col-sm-offset-1">
-					<label>Enter your birthday</label>
-					<ng-include src="'views/includes/datepickerpopup.tpl.html'"></ng-include>
-					<p> I confirm that I am at least 21 years of age and understand that an adult, also 21 years of age or older, must be available to sign for this shipment. I further confirm that I have read and understand the terms of service. And, I understand that sales tax varies by state, so taxes will be calculated at checkout.</p>
-				</div>
-			</form>
-		</uib-accordion-group>
+		</uib-accordion>
+	</ng-form>
 
+	<button class="btn btn-primary" ng-disabled="myform.$invalid" ng-click="submit()">Submit Order</button>
+	<span class="alert alert-danger" role="alert" ng-show="missingInformation">
+		<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		<span class="sr-only">Error:</span>
+		Please enter your credit card information.
+	</span>
+	<span class="alert alert-success" role="alert" ng-show="success">
+		<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+		You have successfully submitted the form.
+	</span>
 
-	</uib-accordion>
 </div>
