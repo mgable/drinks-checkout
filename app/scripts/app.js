@@ -105,7 +105,7 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	$timeout(function(){
 		$scope.$watch("myform.shippingForm.$valid", function(n, o){
 			if (n){
-				dialogs.wait('Validating address','Please wait while we attempt to validate your shipping address.<br><br>This should only take a moment.', _progress, "md");
+				dialogs.wait('Validating shipping address','Please wait while we attempt to validate your shipping address.', _progress, "md");
 				_fakeWaitProgress();
 
 				var $off = $scope.$on('dialogs.wait.complete', function(){
@@ -129,7 +129,7 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 					_reset($scope.status);
 					$scope.status.creditcard.isOpen = true;
 				} else {
-					dialogs.wait('Validating address','Please wait while we attempt to validate your billing address.<br><br>This should only take a moment.', _progress, "md");
+					dialogs.wait('Validating billing address','Please wait while we attempt to validate your billing address.', _progress, "md");
 					_fakeWaitProgress();
 
 					var $off = $scope.$on('dialogs.wait.complete', function(){

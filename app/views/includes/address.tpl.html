@@ -41,7 +41,7 @@
 		
 		<div class="form-group" ng-class="{'has-error': hasError('state'), 'has-success': hasSuccess('state')}">
 			<label for="state">State</label>
-			<states tab-index=6></states>
+			<states tab-index="{{+tabstart + 5}}"></states>
 		</div>
 
 		<div class="form-group" ng-class="{'has-error': hasError('email'), 'has-success': hasSuccess('email')}">
