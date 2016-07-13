@@ -34,6 +34,25 @@
 				<form name="shippingForm">
 					<uib-accordion-heading><span ng-show="myform.shippingForm.$invalid">1.</span><span ng-show="myform.shippingForm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Shipping Address</uib-accordion-heading>
 
+					<div class="row">
+						<div class="col-sm-4">
+						<label style="margin-bottom:3px;">Gift Option</label>
+						 	<div class="checkbox" style="margin-top:0;">
+								<label>
+									<input type="checkbox" ng-model="isGift" tabIndex="16"> This is a gift
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="row" ng-show="isGift">
+						<div class="col-sm-12">
+							<div class="form-group">
+						 		<textarea class="form-control" name="gift-text" style="width:100%" id="gift-text" placeholder="gift text here . . ."></textarea>
+						 	</div>
+						</div>
+					</div>
+
 					<address type="shipping" whichform="shippingForm" tabstart=1></address>
 				</form>
 			</uib-accordion-group>
@@ -41,7 +60,6 @@
 			<uib-accordion-group is-open="status.billing.isOpen" tab-index=12>
 				<form name="billingForm">
 					<uib-accordion-heading><span ng-show="myform.billingForm.$invalid">2.</span><span ng-show="myform.billingForm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Billing Address</uib-accordion-heading>
-sameAsShipping is {{foo.sameAsShipping}}
 					<div class="row">
 						<div class="col-sm-6">
 						 	<div class="checkbox">
@@ -51,11 +69,11 @@ sameAsShipping is {{foo.sameAsShipping}}
 							</div>
 						</div>
 						<div class="col-sm-6">
-						 	<div class="checkbox">
+						 	<!-- <div class="checkbox">
 								<label>
 									<input type="checkbox" ng-model="isGift" tabIndex="16"> This is a gift
 								</label>
-							</div>
+							</div> -->
 						</div>
 					</div>
 					<address type="foo.sameAsShipping ? shipping : billing" whichform="billingForm" tabstart=17></address>
