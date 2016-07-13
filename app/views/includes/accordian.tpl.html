@@ -41,12 +41,12 @@
 			<uib-accordion-group is-open="status.billing.isOpen" tab-index=12>
 				<form name="billingForm">
 					<uib-accordion-heading><span ng-show="myform.billingForm.$invalid">2.</span><span ng-show="myform.billingForm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Billing Address</uib-accordion-heading>
-
+sameAsShipping is {{foo.sameAsShipping}}
 					<div class="row">
 						<div class="col-sm-6">
 						 	<div class="checkbox">
 								<label>
-									<input type="checkbox" ng-model="sameAsShipping" tabIndex="15"> Same as shipping
+									<input type="checkbox" ng-model="foo.sameAsShipping" tabIndex="15"> Same as shipping
 								</label>
 							</div>
 						</div>
@@ -58,7 +58,7 @@
 							</div>
 						</div>
 					</div>
-					<address type="sameAsShipping ? shipping : billing" whichform="billingForm" tabstart=17></address>
+					<address type="foo.sameAsShipping ? shipping : billing" whichform="billingForm" tabstart=17></address>
 				</form>
 			</uib-accordion-group>
 

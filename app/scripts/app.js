@@ -6,6 +6,7 @@ angular.module("checkoutApp", [
 	// 'ui.router',
 	'ui.bootstrap',
 	// 'credit-cards'
+	'dialogs.main',
 	'ngRoute'
 	]);
 
@@ -30,10 +31,23 @@ angular.module("template/accordion/accordion-group.html", []).run(["$templateCac
     "");
 }]);
 
+angular.module("checkoutApp").controller('customDialogCtrl2',function($scope,$uibModalInstance,data){
+		
+	$scope.data = data;
+	
+	//-- Methods --//
+	
+	$scope.done = function(){
+		$uibModalInstance.close($scope.data);
+	}; // end done
+	
+});
+	
+
 
 angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	// nothing
-}).controller('AccordionDemoCtrl', function ($scope, $location, $timeout) {
+}).controller('AccordionDemoCtrl', function ($scope, $location, $timeout, $rootScope, dialogs) {
 	var sequence = ['shipping', 'billing', 'creditcard', 'confirmation'];
 	$scope.step = 0;
 	$scope.oneAtATime = true;
@@ -43,6 +57,8 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	$scope.status.creditcard = {};
 	$scope.status.confirm = {};
 	$scope.isUnderAge = false;
+	$scope.foo = {};
+	$scope.foo.sameAsShipping = false;
 
 	$scope.status.shipping.isOpen = true;
 	$scope.shipping = {};
@@ -54,6 +70,8 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	if ($location.path() !== "/"){
 		console.info("have user");
 	}
+
+
 
 	$scope.submit = function(){
 		console.info("The form was submitted!");
@@ -82,18 +100,50 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	// 	console.info(value);
 	// 	return value;
 	// }
+	var _progress = 0;
 
 	$timeout(function(){
 		$scope.$watch("myform.shippingForm.$valid", function(n, o){
 			if (n){
-				_reset($scope.status)
-				$scope.status.billing.isOpen = true;
+				dialogs.wait('Validating address','Please wait while we attempt to validate your shipping address.<br><br>This should only take a moment.', _progress, "md");
+				_fakeWaitProgress();
+
+				var $off = $scope.$on('dialogs.wait.complete', function(){
+					console.info("here");
+					var dlg = dialogs.create('views/includes/addess_validation.tpl.html','customDialogCtrl2',$scope.shipping,'md');
+					dlg.result.then(function(data){
+						_reset($scope.status)
+						$scope.status.billing.isOpen = true;
+						$off();
+					});
+				});
+
 			}
 		});
 		$scope.$watch("myform.billingForm.$valid", function(n, o){
 			if (n){
-				_reset($scope.status);
-				$scope.status.creditcard.isOpen = true;
+				console.info($scope);
+
+				if($scope.foo.sameAsShipping){
+					console.info("same as shipping");
+					_reset($scope.status);
+					$scope.status.creditcard.isOpen = true;
+				} else {
+					dialogs.wait('Validating address','Please wait while we attempt to validate your billing address.<br><br>This should only take a moment.', _progress, "md");
+					_fakeWaitProgress();
+
+					var $off = $scope.$on('dialogs.wait.complete', function(){
+						console.info("here");
+						var dlg = dialogs.create('views/includes/addess_validation.tpl.html','customDialogCtrl2',$scope.billing,'md');
+						dlg.result.then(function(data){
+							_reset($scope.status)
+							$scope.status.creditcard.isOpen = true;
+							$off();
+						});
+					});
+
+					console.info("validate billing");
+				}
 			}
 		});
 		// $scope.$watch("myform.creditcard.$valid", function(n, o){
@@ -102,7 +152,22 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 		// 		$scope.status.confirm.isOpen = true;
 		// 	}
 		// });
+		
 	}, 500);
+
+	var _fakeWaitProgress = function(){
+		$timeout(function(){
+			if(_progress < 100){
+				_progress += 25;
+				$rootScope.$broadcast('dialogs.wait.progress',{'progress' : _progress});
+				_fakeWaitProgress();
+			}else{
+				console.info("boradcasting complete");
+				_progress = 0;
+				$rootScope.$broadcast('dialogs.wait.complete');
+			}
+		},700);
+	};
 
 	function _reset(arr){
 		_.each(arr, function(item){
