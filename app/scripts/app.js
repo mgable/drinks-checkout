@@ -55,8 +55,6 @@ angular.module("checkoutApp").controller('customDialogCtrl2',function($scope,$ui
 angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	// nothing
 }).controller('AccordionDemoCtrl', function ($scope, $location, $timeout, $rootScope, dialogs, creditcards) {
-	var sequence = ['shipping', 'billing', 'creditcard', 'confirmation'];
-	$scope.step = 0;
 	$scope.oneAtATime = true;
 	$scope.status = {};
 	$scope.status.shipping = {};
@@ -76,6 +74,22 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	$scope.success = false;
 	$scope.birthday = {};
 
+	var account = {
+			"firstname": "John",
+			"lastname": "Smith",
+			"street1": "123 Main Street",
+			"city": "Cooltown",
+			"state": "CA",
+			"zip": "90401",
+			"email": "test@test.com",
+			"phone": "123-123-1234",
+			"creditcardnumber": "4929609396476895",
+			"securitycode": "123",
+			"expirationmonth": "02",
+			"expirationyear": "2017"
+
+		};
+
 	$timeout(function(){
 		$scope.myform.creditcard.$setValidity("isValid", false);
 	});
@@ -83,6 +97,23 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	if ($location.path() !== "/"){
 		console.info("have user");
 	}
+
+	$scope.submitLogin = function(){
+		$scope.billing = $scope.shipping = account;
+		$scope.account = true;
+
+		var w = document.getElementById('iframe1').contentWindow,
+			creditcardnumber =  w.document.getElementById('creditcardnumber'),
+			securitycode =  w.document.getElementById('securitycode'),
+			expirationmonth = w.document.getElementById('expirationmonth'),
+			expirationyear = w.document.getElementById('expirationyear');
+
+		$(creditcardnumber).val(creditcards.card.format(account.creditcardnumber));
+		$(securitycode).val(account.securitycode);
+		$(expirationmonth).val(account.expirationmonth);
+		$(expirationyear).val(account.expirationyear);
+		$scope.status.creditcard.isOpen = true;
+	};
 
 	$scope.submit = function(){
 		console.info("The form was submitted!");
@@ -110,7 +141,7 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 		console.info(year);
 		console.info(creditcards.expiration.isPast(month, year));
 
-		$scope.missingInformation = !(_validNumber(creditcardnumber) && _validCVV(securitycode) && _validDate(expirationyear, expirationmonth));
+		$scope.missingInformation = !(_validNumber(creditcards.card.parse(creditcardnumber)) && _validCVV(securitycode) && _validDate(expirationyear, expirationmonth));
 
 		if (!$scope.missingInformation){
 			$scope.success = true;
@@ -145,12 +176,11 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 
 	$timeout(function(){
 		$scope.$watch("myform.shippingForm.$valid", function(n, o){
-			if (n){
+			if (n && !$scope.account){
 				dialogs.wait('Validating shipping address','Please wait while we attempt to validate your shipping address.', _progress, "md");
 				_fakeWaitProgress();
 
 				var $off = $scope.$on('dialogs.wait.complete', function(){
-					console.info("here");
 					var dlg = dialogs.create('views/includes/addess_validation.tpl.html','customDialogCtrl2',$scope.shipping,'md');
 					dlg.result.then(function(data){
 						_reset($scope.status)
@@ -159,14 +189,16 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 					});
 				});
 
+			} else if (n && $scope.account){
+				console.info("I am here!!!");
+				// 
+				$scope.status.creditcard.isOpen = true;
+
 			}
 		});
 		$scope.$watch("myform.billingForm.$valid", function(n, o){
-			if (n){
-				console.info($scope);
-
+			if (n && !$scope.account){
 				if($scope.foo.sameAsShipping){
-					console.info("same as shipping");
 					_reset($scope.status);
 					$scope.status.creditcard.isOpen = true;
 				} else {
@@ -174,7 +206,6 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 					_fakeWaitProgress();
 
 					var $off = $scope.$on('dialogs.wait.complete', function(){
-						console.info("here");
 						var dlg = dialogs.create('views/includes/addess_validation.tpl.html','customDialogCtrl2', $scope.billing,'md');
 						dlg.result.then(function(data){
 							_reset($scope.status)
@@ -182,8 +213,6 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 							$off();
 						});
 					});
-
-					console.info("validate billing");
 				}
 			}
 		});
@@ -240,8 +269,6 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	});
 
 	function _isOfAge(birthday) { // birthday is a date
-		console.info("the date");
-		console.info(birthday);
 	    var ageDifMs = Date.now() - birthday.getTime();
 	    var ageDate = new Date(ageDifMs); // miliseconds from epoch
 	    return Math.abs(ageDate.getUTCFullYear() - 1970) >= 21;

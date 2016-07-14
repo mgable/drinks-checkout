@@ -2,7 +2,27 @@
 	<ng-form name="myform">
 <!-- 
 	<pre>{{myform.shippingForm["zip"] | json}}</pre> -->
+		<h5>Don't like filling out forms? <a ng-click="status.shipping.isOpen = false; status.login.isOpen = true" style="cursor:pointer;">Log in</a> to pre-fill this form.</h5>
+
 		<uib-accordion close-others="oneAtATime">
+
+			<div ng-show="status.login.isOpen" style="margin-bottom: 5px;">
+				<uib-accordion-group is-open="status.login.isOpen" tab-index=0>
+					<uib-accordion-heading>Log In</uib-accordion-heading>
+					<form name="login" novalidate>
+						<div class="form-group">
+							<label for="username">Email address</label>
+							<input type="email" class="form-control" id="username" ng-model="foo.username" placeholder="Email" name="username" ng-required="status.login.isOpen">
+						</div>
+						<div class="form-group">
+							<label for="password">Password</label>
+							<input type="password" class="form-control" id="password" ng-model="foo.password" placeholder="Password" name="password" ng-required="status.login.isOpen">
+						</div>
+						 <button type="submit" class="btn btn-primary" ng-disabled="myform.login.$invalid" ng-click="submitLogin()">Submit</button>
+						 <button type="submit" class="btn btn-default" ng-click="foo.username =''; foo.password =''">Clear</button>
+					</form>
+				</uib-accordion-group>
+			</div>
 
 			<uib-accordion-group is-open="status.shipping.isOpen" tab-index=0>
 				<form name="shippingForm" novalidate>
@@ -76,6 +96,8 @@
 
 		</uib-accordion>
 	</ng-form>
+
+<!-- 	<pre>{{myform | json}}</pre> -->
 
 	<button class="btn btn-primary" ng-disabled="myform.$invalid" ng-click="submit()">Submit Order</button>
 
