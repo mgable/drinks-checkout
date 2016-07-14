@@ -31,7 +31,7 @@
 		<uib-accordion close-others="oneAtATime">
 
 			<uib-accordion-group is-open="status.shipping.isOpen" tab-index=0>
-				<form name="shippingForm">
+				<form name="shippingForm" novalidate>
 					<uib-accordion-heading><span ng-show="myform.shippingForm.$invalid">1.</span><span ng-show="myform.shippingForm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Shipping Address</uib-accordion-heading>
 
 					<div class="row">
@@ -39,16 +39,16 @@
 						<label style="margin-bottom:3px;">Gift Option</label>
 						 	<div class="checkbox" style="margin-top:0;">
 								<label>
-									<input type="checkbox" ng-model="isGift" tabIndex="16"> This is a gift
+									<input type="checkbox" ng-model="isGift" tabIndex="16" tabIndex="1"> This is a gift
 								</label>
 							</div>
 						</div>
 					</div>
 
-					<div class="row" ng-show="isGift">
+					<div class="row" ng-if="isGift">
 						<div class="col-sm-12">
 							<div class="form-group">
-						 		<textarea class="form-control" name="gift-text" style="width:100%" id="gift-text" placeholder="gift text here . . ."></textarea>
+						 		<textarea focus tabIndex="1" class="form-control" name="gift-text" style="width:100%" id="gift-text" placeholder="gift text here . . ."></textarea>
 						 	</div>
 						</div>
 					</div>
@@ -58,7 +58,7 @@
 			</uib-accordion-group>
 
 			<uib-accordion-group is-open="status.billing.isOpen" tab-index=12>
-				<form name="billingForm">
+				<form name="billingForm" novalidate>
 					<uib-accordion-heading><span ng-show="myform.billingForm.$invalid">2.</span><span ng-show="myform.billingForm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Billing Address</uib-accordion-heading>
 					<div class="row">
 						<div class="col-sm-6">
@@ -68,13 +68,6 @@
 								</label>
 							</div>
 						</div>
-						<div class="col-sm-6">
-						 	<!-- <div class="checkbox">
-								<label>
-									<input type="checkbox" ng-model="isGift" tabIndex="16"> This is a gift
-								</label>
-							</div> -->
-						</div>
 					</div>
 					<address type="foo.sameAsShipping ? shipping : billing" whichform="billingForm" tabstart=17></address>
 				</form>
@@ -82,17 +75,18 @@
 
 			<uib-accordion-group is-open="status.creditcard.isOpen" tab-index=30>
 				
-					<uib-accordion-heading><span ng-show="true" x="myform.creditcard.$invalid">3.</span><span ng-show="false" x="myform.creditcard.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Credit Card</uib-accordion-heading>
+					<uib-accordion-heading><span ng-show="myform.creditcard.$invalid">3.</span><span ng-show="myform.creditcard.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Credit Card</uib-accordion-heading>
 
 					<div class="row">
-						<form name="creditcard">
+						<form name="creditcard" novalidate>
 
 							<iframe frameborder="0" name="vantiv-payframe" src="views/includes/creditcardiframe.html" width="100%" height="260px" id="iframe1" marginheight="0" frameborder="0" ng-class="{'error': missingInformation}"></iframe>
 						</form>
 					</div>
+
 					<div class="row">
 						<div class="col-sm-10 col-sm-offset-1">
-							<form name="confirm">
+							<form name="confirm" novalidate>
 								<label>Enter your birthday</label>
 								<ng-include src="'views/includes/datepickerpopup.tpl.html'"></ng-include>
 								<p> I confirm that I am at least 21 years of age and understand that an adult, also 21 years of age or older, must be available to sign for this shipment. I further confirm that I have read and understand the terms of service. And, I understand that sales tax varies by state, so taxes will be calculated at checkout.</p>
@@ -105,43 +99,73 @@
 							</form>
 						</div>
 					</div>
-				
 			</uib-accordion-group>
-
-<!-- 			myform <pre>{{myform.confirm | json}}</pre> -->
-
-<!-- 			<uib-accordion-group is-open="status.confirm.isOpen" tab-index=40>
-				<form name="confirm">
-					<uib-accordion-heading><span ng-show="myform.confirm.$invalid">4.</span><span ng-show="myform.confirm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Confirmation</uib-accordion-heading>
-
-					<div class="row">
-						<div class="col-sm-10 col-sm-offset-1">
-							<label>Enter your birthday</label>
-							<ng-include src="'views/includes/datepickerpopup.tpl.html'"></ng-include>
-							<p> I confirm that I am at least 21 years of age and understand that an adult, also 21 years of age or older, must be available to sign for this shipment. I further confirm that I have read and understand the terms of service. And, I understand that sales tax varies by state, so taxes will be calculated at checkout.</p>
-
-							<div class="alert alert-danger" role="alert" ng-show="isUnderAge">
-								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-								<span class="sr-only">Error:</span>
-								You must be 21 years old to order.
-							</div>
-						</div>
-					</div>
-				</form>
-			</uib-accordion-group> -->
 
 		</uib-accordion>
 	</ng-form>
 
 	<button class="btn btn-primary" ng-disabled="myform.$invalid" ng-click="submit()">Submit Order</button>
+
 	<span class="alert alert-danger" role="alert" ng-show="missingInformation">
 		<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 		<span class="sr-only">Error:</span>
-		Please enter your credit card information.
+		There are issues with your credit card information.
 	</span>
+
 	<span class="alert alert-success" role="alert" ng-show="success">
 		<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
 		You have successfully submitted the form.
 	</span>
+
+	<div class="panel panel-default" style="margin-top:20px" ng-show="success && !account">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<span>Create Account</span>
+			</h4>
+		</div>
+		<div class="panel-collapse">
+			<div class="panel-body">
+				<div class="row" style="padding-bottom:5px">
+					<div class="col-sm-12">
+						If you ever plan to order with us again, you should create an account.
+					</div>
+				</div>
+				<form class="form-horizontal" name="accountForm">
+					<!-- <div class="row"> -->
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label class="col-sm-2 control-label" style="padding-left:0">Username:</label>
+								<div class="col-sm-10">
+									<p class="form-control-static">{{shipping.email}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputPassword">Password:</label>
+								<input type="password" ng-model="password" class="form-control" id="inputPassword" required="true" placeholder="minimum length 8 characters" ng-minlength="8" name="password" style="width:90%;display:inline-block;margin-right:5px">
+								<span class="text-success" ng-show="accountForm.password.$valid"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></span>
+							</div>
+
+							<div class="form-group">
+								<label for="confirmPassword">Confirm Password:</label>
+								<input type="password" ng-model="confirmPassword" class="form-control" id="confirmPassword" required="true" placeholder="minimum length 8 characters" ng-minlength="8" name="confirmPassword" style="width:90%;display:inline-block;margin-right:5px" ng-pattern="password">
+								<span class="text-success" ng-show="accountForm.confirmPassword.$valid"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></span>
+							</div>
+						<!-- </div> -->
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<label>
+								<button ng-disabled="accountForm.$invalid" class="btn btn-primary" ng-click="showAccountSuccess = true">Create Account</button>
+							</label>
+							<span class="alert alert-success" role="alert" ng-show="showAccountSuccess">
+								<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+								You have successfully made an account.
+							</span>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
 </div>

@@ -5,7 +5,7 @@ angular.module("checkoutApp", [
 	// 'ngSanitize',
 	// 'ui.router',
 	'ui.bootstrap',
-	// 'credit-cards'
+	'credit-cards',
 	'dialogs.main',
 	'ngRoute'
 	]);
@@ -47,7 +47,7 @@ angular.module("checkoutApp").controller('customDialogCtrl2',function($scope,$ui
 
 angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	// nothing
-}).controller('AccordionDemoCtrl', function ($scope, $location, $timeout, $rootScope, dialogs) {
+}).controller('AccordionDemoCtrl', function ($scope, $location, $timeout, $rootScope, dialogs, creditcards) {
 	var sequence = ['shipping', 'billing', 'creditcard', 'confirmation'];
 	$scope.step = 0;
 	$scope.oneAtATime = true;
@@ -59,6 +59,7 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	$scope.isUnderAge = false;
 	$scope.foo = {};
 	$scope.foo.sameAsShipping = false;
+	$scope.account = false;
 
 	$scope.status.shipping.isOpen = true;
 	$scope.shipping = {};
@@ -66,6 +67,11 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	$scope.creditcard = {};
 	$scope.missingInformation = false;
 	$scope.success = false;
+
+	$timeout(function(){
+		$scope.myform.creditcard.$setValidity("isValid", false);
+	});
+	
 
 	if ($location.path() !== "/"){
 		console.info("have user");
@@ -83,23 +89,46 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 			creditcardnumber =  w.document.getElementById('creditcardnumber').value,
 			securitycode =  w.document.getElementById('securitycode').value,
 			expirationmonth = w.document.getElementById('expirationmonth').value,
-			expirationyear = w.document.getElementById('expirationyear').value;
+			expirationyear = w.document.getElementById('expirationyear').value,
 
-		console.info(!!(creditcardnumber, securitycode, expirationmonth, expirationyear));
+			month = creditcards.expiration.month.parse(expirationmonth),
+			year = creditcards.expiration.year.parse(expirationyear);
 
-		$scope.missingInformation = !(creditcardnumber && securitycode && expirationmonth && expirationyear);
+		console.info("validating credit card info");
+		console.info(creditcardnumber);
+		var month = creditcards.expiration.month.parse(expirationmonth),
+			year = creditcards.expiration.year.parse(expirationyear);
+
+		console.info(creditcards.card.luhn(creditcardnumber));
+		console.info(creditcards.cvc.isValid(securitycode));
+		console.info(month);
+		console.info(year);
+		console.info(creditcards.expiration.isPast(month, year));
+
+		$scope.missingInformation = !(_validNumber(creditcardnumber) && _validCVV(securitycode) && _validDate(expirationyear, expirationmonth));
 
 		if (!$scope.missingInformation){
 			$scope.success = true;
 		}
 	}
 
+	function _validNumber(creditcardnumber){
+		return creditcards.card.luhn(creditcardnumber);
+	}
 
-	// $scope.hasSelection = function(value){
-	// 	console.info("the values is");
-	// 	console.info(value);
-	// 	return value;
-	// }
+	function _validCVV(securitycode){
+		return creditcards.cvc.isValid(securitycode);
+	}
+
+	function _validDate(expirationyear, expirationmonth){
+		if (!expirationyear || !expirationmonth){
+			return false;
+		}
+		var month = creditcards.expiration.month.parse(expirationmonth),
+			year = creditcards.expiration.year.parse(expirationyear);
+		return !creditcards.expiration.isPast(month, year);
+	}
+
 	var _progress = 0;
 
 	$timeout(function(){
@@ -146,12 +175,6 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 				}
 			}
 		});
-		// $scope.$watch("myform.creditcard.$valid", function(n, o){
-		// 	if (n){
-		// 		_reset($scope.status);
-		// 		$scope.status.confirm.isOpen = true;
-		// 	}
-		// });
 		
 	}, 500);
 
@@ -197,13 +220,8 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 
 	function _setAgeVerification(evt, data){
 		$scope.isUnderAge = data;
-		var w = document.getElementById('iframe1').contentWindow;
-		var creditcardnumber =  w.document.getElementById('creditcardnumber').value,
-			securitycode =  w.document.getElementById('securitycode').value,
-			expirationmonth = w.document.getElementById('expirationmonth').value,
-			expirationyear = w.document.getElementById('expirationyear').value;
 
-		//$scope.myform.creditcard.$setValidity("isValid",!!(creditcardnumber && securitycode && expirationmonth && expirationyear));
+		$scope.myform.creditcard.$setValidity("isValid", !$scope.isUnderAge);
 
 	}
 
