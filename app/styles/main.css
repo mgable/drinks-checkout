@@ -10,5 +10,10 @@ body {
     color: #3c763d; }
   body iframe.error {
     border: 2px solid red; }
+  body .text-danger.error {
+    color: red;
+    font-size: smaller; }
+  body .has-error .form-control {
+    border: 2px solid red; }
 
 /*# sourceMappingURL=main.css.map */

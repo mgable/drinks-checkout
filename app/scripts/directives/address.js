@@ -24,6 +24,12 @@ angular.module("checkoutApp").directive("address", function(){
 				}
 				return true;
 			};
+			scope.displayError = function(field){
+				if (scope.whichform[field]){
+					return !_.isEmpty(scope.whichform[field].$error) && scope.whichform[field].$touched && scope.whichform[field].$dirty;
+				}
+				return false;
+			};
 		},
 		controller: function($scope){
 			$scope.getTabIndex = function(){

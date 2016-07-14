@@ -21,4 +21,13 @@ body {
 	iframe.error {
 		border: 2px solid red;
 	}
+
+	.text-danger.error {
+		color: red;
+		font-size: smaller;
+	}
+
+	.has-error .form-control {
+		border: 2px solid red;
+	}
 }

@@ -163,7 +163,7 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 
 					var $off = $scope.$on('dialogs.wait.complete', function(){
 						console.info("here");
-						var dlg = dialogs.create('views/includes/addess_validation.tpl.html','customDialogCtrl2',$scope.billing,'md');
+						var dlg = dialogs.create('views/includes/addess_validation.tpl.html','customDialogCtrl2', $scope.billing,'md');
 						dlg.result.then(function(data){
 							_reset($scope.status)
 							$scope.status.creditcard.isOpen = true;
@@ -200,20 +200,6 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 
 	$scope.isOpen = function(which){
 		return which === $scope.status.isOpen;
-	}
-
-	$scope.hasError = function(form, field){
-		if ($scope.myform[form][field]){
-			return $scope.myform[form][field].$invalid && $scope.myform[form][field].$dirty;
-		} 
-		return false;
-	}
-
-	$scope.hasSuccess = function(form, field){
-		if ($scope.myform[form][field]){
-			return $scope.myform[form][field].$valid && $scope.myform[form][field].$touched;
-		}
-		return true;
 	}
 
 	$scope.$on("AGE-VERIFICATION", _setAgeVerification);
