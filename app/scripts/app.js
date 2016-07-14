@@ -41,6 +41,13 @@ angular.module("checkoutApp").controller('customDialogCtrl2',function($scope,$ui
 		$uibModalInstance.close($scope.data);
 	}; // end done
 	
+	$scope.hitEnter = function(evt){
+		console.info("checking key");
+		console.info(evt);
+		if(angular.equals(evt.keyCode,13)){
+			$uibModalInstance.close($scope.data);
+		}
+	};
 });
 	
 
@@ -67,17 +74,15 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	$scope.creditcard = {};
 	$scope.missingInformation = false;
 	$scope.success = false;
+	$scope.birthday = {};
 
 	$timeout(function(){
 		$scope.myform.creditcard.$setValidity("isValid", false);
 	});
 	
-
 	if ($location.path() !== "/"){
 		console.info("have user");
 	}
-
-
 
 	$scope.submit = function(){
 		console.info("The form was submitted!");
@@ -128,6 +133,13 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 			year = creditcards.expiration.year.parse(expirationyear);
 		return !creditcards.expiration.isPast(month, year);
 	}
+
+	$scope.displayError = function(field){
+		if ($scope.myform.confirm[field]){
+			return !_.isEmpty($scope.myform.confirm[field].$error) && $scope.myform.confirm[field].$touched && $scope.myform.confirm[field].$dirty;
+		}
+		return false;
+	};
 
 	var _progress = 0;
 
@@ -211,81 +223,18 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 
 	}
 
-}).controller('DatepickerDemoCtrl', function ($scope) {
-	$scope.today = function() {
-		$scope.dt = new Date();
-	};
-	$scope.today();
+	$scope.$watch("myform.confirm.$valid", function(n,o){
 
-	$scope.clear = function() {
-		$scope.dt = null;
-	};
-
-	$scope.options = {
-		customClass: getDayClass,
-		minDate: new Date(),
-		showWeeks: true
-	};
-
-	// Disable weekend selection
-	function disabled(data) {
-		var date = data.date,
-		mode = data.mode;
-		return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
-	}
-
-	$scope.toggleMin = function() {
-		$scope.options.minDate = $scope.options.minDate ? null : new Date();
-	};
-
-	$scope.toggleMin();
-
-	$scope.setDate = function(year, month, day) {
-		$scope.dt = new Date(year, month, day);
-	};
-
-	var tomorrow = new Date();
-	tomorrow.setDate(tomorrow.getDate() + 1);
-	var afterTomorrow = new Date(tomorrow);
-	afterTomorrow.setDate(tomorrow.getDate() + 1);
-	$scope.events = [
-	{
-		date: tomorrow,
-		status: 'full'
-	},
-	{
-		date: afterTomorrow,
-		status: 'partially'
-	}
-	];
-
-	function getDayClass(data) {
-		var date = data.date,
-		mode = data.mode;
-		if (mode === 'day') {
-			var dayToCheck = new Date(date).setHours(0,0,0,0);
-
-			for (var i = 0; i < $scope.events.length; i++) {
-				var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
-
-				if (dayToCheck === currentDay) {
-					return $scope.events[i].status;
+		if ($scope.myform.confirm.$valid && $scope.myform.confirm.$dirty){
+			if (n){
+				var d = new Date($scope.birthday.year, $scope.birthday.month, $scope.birthday.day);
+				if(_isOfAge(d)){
+					console.info("old enough");
+					$scope.$emit("AGE-VERIFICATION", false);
+				} else {
+					console.info("too young");
+					$scope.$emit("AGE-VERIFICATION", true);
 				}
-			}
-		}
-
-		return '';
-	}
-}).controller('DatepickerPopupDemoCtrl', function ($scope) {
-
-	$scope.$watch("dt", function(n,o){
-		if (n){
-			if(_isOfAge(n)){
-				console.info("old enough");
-				$scope.$emit("AGE-VERIFICATION", false);
-			} else {
-				console.info("too young");
-				$scope.$emit("AGE-VERIFICATION", true);
 			}
 		}
 	});
@@ -298,94 +247,4 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	    return Math.abs(ageDate.getUTCFullYear() - 1970) >= 21;
 	}
 
-	$scope.clear = function() {
-		$scope.dt = null;
-	};
-
-	$scope.inlineOptions = {
-		customClass: getDayClass,
-		minDate: new Date(),
-		showWeeks: true
-	};
-
-	$scope.dateOptions = {
-		dateDisabled: disabled,
-		formatYear: 'yy',
-		// maxDate: new Date(),
-		// minDate: new Date(1901, 0, 1),
-		startingDay: 1
-	};
-
-	// Disable weekend selection
-	function disabled(data) {
-		var date = data.date,
-		mode = data.mode;
-		return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
-	}
-
-	$scope.toggleMin = function() {
-		$scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
-		$scope.dateOptions.minDate = $scope.inlineOptions.minDate;
-	};
-
-	$scope.toggleMin();
-
-	$scope.open1 = function() {
-		$scope.popup1.opened = true;
-	};
-
-	$scope.open2 = function() {
-		$scope.popup2.opened = true;
-	};
-
-	$scope.setDate = function(year, month, day) {
-		$scope.dt = new Date(year, month, day);
-		console.info("I set the data to ");
-		console.info(year, month, day);
-	};
-
-	$scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
-	$scope.format = $scope.formats[4];
-	$scope.altInputFormats = ['M!/d!/yyyy'];
-
-	$scope.popup1 = {
-		opened: false
-	};
-
-	$scope.popup2 = {
-		opened: false
-	};
-
-	var tomorrow = new Date();
-	tomorrow.setDate(tomorrow.getDate() + 1);
-	var afterTomorrow = new Date();
-	afterTomorrow.setDate(tomorrow.getDate() + 1);
-	$scope.events = [
-	{
-		date: tomorrow,
-		status: 'full'
-	},
-	{
-		date: afterTomorrow,
-		status: 'partially'
-	}
-	];
-
-	function getDayClass(data) {
-		var date = data.date,
-		mode = data.mode;
-		if (mode === 'day') {
-			var dayToCheck = new Date(date).setHours(0,0,0,0);
-
-			for (var i = 0; i < $scope.events.length; i++) {
-				var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
-
-				if (dayToCheck === currentDay) {
-					return $scope.events[i].status;
-				}
-			}
-		}
-
-		return '';
-	}
 });

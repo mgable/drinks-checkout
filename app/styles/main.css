@@ -15,5 +15,9 @@ body {
     font-size: smaller; }
   body .has-error .form-control {
     border: 2px solid red; }
+  body .form-inline.confirm .form-control {
+    width: 100%; }
+  body .confirm .col-sm-4 {
+    padding: 0 5px; }
 
 /*# sourceMappingURL=main.css.map */

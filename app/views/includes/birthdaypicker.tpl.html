@@ -1,0 +1,16 @@
+ <p class="form-group" style="margin-bottom:10px">
+ 	<div class="row">
+ 		<div class="col-sm-4"> 
+	 		<months tab-index="35"></months>
+	 	</div>
+	 	<div class="col-sm-4"> 
+			<input type="text" class="form-control"  ng-model="birthday.day"  ng-required="true" placeholder="Day" ng-pattern="'(^0[1-9]$)|(^[1-2][0-9]$)|(^3[01]$)|(^[1-9]{1}$)'" ng-maxlength="2" ng-minlength="1" tabIndex="36" name="birthday-day"/>
+			<span class="text-danger error" ng-show="displayError('birthday-day')">invalid day</span>
+		</div>
+		
+		<div class="col-sm-4"> 
+			<input type="text" class="form-control"  ng-model="birthday.year"  ng-required="true" placeholder="Year" ng-pattern="'(^19\\d{2}$)|(^20\\d{2}$)'" ng-maxlength="4" ng-minlength="4" tabIndex="37" name="birthday-year"/>
+			<span class="text-danger error" ng-show="displayError('birthday-year')">invalid year</span>
+		</div>
+	</div>
+</p>

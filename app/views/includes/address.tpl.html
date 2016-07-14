@@ -25,7 +25,7 @@
 
 		<div class="form-group" ng-class="{'has-error': hasError('phone'), 'has-success': hasSuccess('phone')}">
 			<label for="phone">Phone</label>
-			<input type="tel" name="phone" class="form-control" id="phone" placeholder="XXX-XXX-XXXX" ng-required=true ng-model="address.phone" ng-minlength="10" ng-maxlength="12" ng-pattern="'^\\d{3}[^\\w\\d]?\\d{3}[^\\w\\d]?\\d{4}$'" tabindex="{{+tabstart + 8}}">
+			<input type="tel" name="phone" class="form-control" id="phone" placeholder="###-###-####" ng-required=true ng-model="address.phone" ng-minlength="10" ng-maxlength="12" ng-pattern="'^\\d{3}[^\\w\\d]?\\d{3}[^\\w\\d]?\\d{4}$'" tabindex="{{+tabstart + 8}}">
 			<span class="text-danger error" ng-show="displayError('phone')">Please enter a valid phone number.</span>
 		</div>
 
