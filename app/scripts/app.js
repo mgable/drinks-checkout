@@ -3,7 +3,8 @@
 angular.module("checkoutApp", [
 	'ui.bootstrap',
 	'credit-cards',
-	'dialogs.main'
+	'dialogs.main',
+	'ngSanitize'
 	]);
 
 angular.module("checkoutApp").controller('customDialogCtrl2',function($scope,$uibModalInstance,data){
@@ -48,6 +49,8 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	$scope.missingInformation = false;
 	$scope.success = false;
 	$scope.birthday = {};
+	$scope.address = {"shipping": "", "billing": ""};
+	$scope.creditcarddisplay = "";
 
 	var account = {
 			"firstname": "John",
@@ -134,6 +137,10 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 		return !creditcards.expiration.isPast(month, year);
 	}
 
+	function _maskCreditCard(cc){
+		return cc.replace(/\d{12}(\d*)/, "card ending in ************ $1");
+	}
+
 	$scope.displayError = function(field){
 		if ($scope.myform.confirm[field]){
 			return !_.isEmpty($scope.myform.confirm[field].$error) && $scope.myform.confirm[field].$touched && $scope.myform.confirm[field].$dirty;
@@ -171,6 +178,10 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 		$scope.myform.creditcard.$setValidity("isValid", !$scope.isUnderAge);
 	}
 
+	function _makeAddress(type){
+		return $scope[type].firstname + "&nbsp;" + $scope[type].lastname + "&nbsp;...&nbsp;" + $scope[type].city + ",&nbsp;" + $scope[type].state + "&nbsp;" + $scope[type].zip;
+	}
+
 	function _init(){
 		$scope.$on("AGE-VERIFICATION", _setAgeVerification);
 		$timeout(function(){
@@ -182,7 +193,8 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 					var $off = $scope.$on('dialogs.wait.complete', function(){
 						var dlg = dialogs.create('views/includes/addess_validation.tpl.html','customDialogCtrl2',$scope.shipping,'md');
 						dlg.result.then(function(data){
-							_reset($scope.status)
+							_reset($scope.status);
+							$scope.address.shipping = _makeAddress("shipping");
 							$scope.status.billing.isOpen = true;
 							$off();
 						});
@@ -192,13 +204,16 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 					console.info("I am here!!!");
 					// 
 					$scope.status.creditcard.isOpen = true;
-
+					$scope.address.shipping = _makeAddress("shipping");
 				}
 			});
 			$scope.$watch("myform.billingForm.$valid", function(n, o){
 				if (n && !$scope.account){
 					if($scope.foo.sameAsShipping){
 						_reset($scope.status);
+						$scope.billing = $scope.shipping;
+						$scope.address.billing = _makeAddress("billing");
+						$scope.creditcarddisplay = $scope.account ? _maskCreditCard($scope.shipping.creditcardnumber) : false; 
 						$scope.status.creditcard.isOpen = true;
 					} else {
 						dialogs.wait('Validating billing address','Please wait while we attempt to validate your billing address.', _progress, "md");
@@ -207,12 +222,17 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 						var $off = $scope.$on('dialogs.wait.complete', function(){
 							var dlg = dialogs.create('views/includes/addess_validation.tpl.html','customDialogCtrl2', $scope.billing,'md');
 							dlg.result.then(function(data){
-								_reset($scope.status)
+								_reset($scope.status);
+								$scope.address.billing = _makeAddress("billing");
 								$scope.status.creditcard.isOpen = true;
+								$scope.creditcarddisplay = $scope.account ? _maskCreditCard($scope.shipping.creditcardnumber) : false; 
 								$off();
 							});
 						});
 					}
+				} else if (n && $scope.account) {
+					$scope.address.billing = _makeAddress("billing");
+					$scope.creditcarddisplay = _maskCreditCard($scope.shipping.creditcardnumber); 
 				}
 			});
 			$scope.$watch("myform.confirm.$valid", function(n,o){

@@ -26,14 +26,14 @@
 			<p><em >Don't have an account? Just fill out the form and we will create it for you!</em></p>
 			<uib-accordion-group is-open="status.shipping.isOpen" tab-index=0 template-url="views/includes/accordian_group.tpl.html">
 				<form name="shippingForm" novalidate>
-					<uib-accordion-heading><span ng-show="myform.shippingForm.$invalid">1.</span><span ng-show="myform.shippingForm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Shipping Address</uib-accordion-heading>
+					<uib-accordion-heading><span ng-show="myform.shippingForm.$invalid">1.</span><span ng-show="myform.shippingForm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Shipping Address<span ng-show="address.shipping" class="pull-right address"><span ng-bind-html="address.shipping" style="padding-right: 10px"></span><span class="edit text-info">&nbsp;edit</span></span></uib-accordion-heading>
 
 					<div class="row">
 						<div class="col-sm-4">
 						<label style="margin-bottom:3px;">Gift Option</label>
 						 	<div class="checkbox" style="margin-top:0;">
 								<label>
-									<input type="checkbox" ng-model="isGift" tabIndex="1"> This is a gift
+									<input type="checkbox" ng-model="isGift" tabIndex="1"> This is a gift&nbsp;<span class="glyphicon glyphicon-gift gift" aria-hidden="true"></span>
 								</label>
 							</div>
 						</div>
@@ -53,7 +53,7 @@
 
 			<uib-accordion-group is-open="status.billing.isOpen" tab-index=12 template-url="views/includes/accordian_group.tpl.html">
 				<form name="billingForm" novalidate>
-					<uib-accordion-heading><span ng-show="myform.billingForm.$invalid">2.</span><span ng-show="myform.billingForm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Billing Address</uib-accordion-heading>
+					<uib-accordion-heading><span ng-show="myform.billingForm.$invalid">2.</span><span ng-show="myform.billingForm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Billing Address<span ng-show="address.billing" class="pull-right address"><span ng-bind-html="address.billing" style="padding-right: 10px"></span><span class="edit text-info">&nbsp;edit</span></span></uib-accordion-heading>
 					<div class="row">
 						<div class="col-sm-6">
 						 	<div class="checkbox">
@@ -68,7 +68,7 @@
 			</uib-accordion-group>
 
 			<uib-accordion-group is-open="status.creditcard.isOpen" tab-index=30 template-url="views/includes/accordian_group.tpl.html">
-				<uib-accordion-heading><span ng-show="myform.creditcard.$invalid">3.</span><span ng-show="myform.creditcard.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Credit Card</uib-accordion-heading>
+				<uib-accordion-heading><span ng-show="myform.creditcard.$invalid">3.</span><span ng-show="myform.creditcard.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Credit Card<span ng-show="creditcarddisplay" class="pull-right address"><span ng-bind-html="creditcarddisplay" style="padding-right: 10px"></span><span class="edit text-info">&nbsp;edit</span></span></uib-accordion-heading>
 
 				<div class="row">
 					<form name="creditcard" novalidate>

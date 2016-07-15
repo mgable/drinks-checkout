@@ -37,4 +37,16 @@ body {
 	.confirm .col-sm-4 {
 		padding:0 5px;
 	}
+
+	.address {
+		span {
+			vertical-align: sub;
+		}
+		font-size:11px;
+	}
+
+	.gift {
+		color: green;
+	}
+
 }

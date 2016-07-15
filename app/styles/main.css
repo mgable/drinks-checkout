@@ -19,5 +19,11 @@ body {
     width: 100%; }
   body .confirm .col-sm-4 {
     padding: 0 5px; }
+  body .address {
+    font-size: 11px; }
+    body .address span {
+      vertical-align: sub; }
+  body .gift {
+    color: green; }
 
 /*# sourceMappingURL=main.css.map */
