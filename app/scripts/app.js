@@ -1,35 +1,10 @@
 "use strict";
 
 angular.module("checkoutApp", [
-	// 'ngResource',
-	// 'ngSanitize',
-	// 'ui.router',
 	'ui.bootstrap',
 	'credit-cards',
-	'dialogs.main',
-	'ngRoute'
+	'dialogs.main'
 	]);
-
-angular.module("checkoutApp").config(function($routeProvider, $locationProvider){
-	$routeProvider
-		.when('/:userid/:foo', {controller:'AccordionDemoCtrl'});
-	$locationProvider.html5Mode(true);
-});
-
-angular.module("template/accordion/accordion-group.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("template/accordion/accordion-group.html",
-    "<div class=\"panel {{panelClass || 'panel-default'}}\">\n" +
-    "  <div class=\"panel-heading\" ng-keypress=\"toggleOpen($event)\">\n" +
-    "    <h4 class=\"panel-title\">\n" +
-    "      <a href tabindex=\"{{tab || -1}}\" class=\"accordion-toggle\" ng-click=\"toggleOpen()\" uib-accordion-transclude=\"heading\"><span ng-class=\"{'text-muted': isDisabled}\">{{heading}}</span></a>\n" +
-    "    </h4>\n" +
-    "  </div>\n" +
-    "  <div class=\"panel-collapse collapse\" uib-collapse=\"!isOpen\">\n" +
-    "	  <div class=\"panel-body\" ng-transclude></div>\n" +
-    "  </div>\n" +
-    "</div>\n" +
-    "");
-}]);
 
 angular.module("checkoutApp").controller('customDialogCtrl2',function($scope,$uibModalInstance,data){
 		
@@ -88,16 +63,10 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 			"expirationmonth": "02",
 			"expirationyear": "2017"
 
-		};
+		},
+		_progress = 0;
 
-	$timeout(function(){
-		$scope.myform.creditcard.$setValidity("isValid", false);
-	});
 	
-	if ($location.path() !== "/"){
-		console.info("have user");
-	}
-
 	$scope.submitLogin = function(){
 		$scope.billing = $scope.shipping = account;
 		$scope.account = true;
@@ -172,54 +141,7 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 		return false;
 	};
 
-	var _progress = 0;
-
-	$timeout(function(){
-		$scope.$watch("myform.shippingForm.$valid", function(n, o){
-			if (n && !$scope.account){
-				dialogs.wait('Validating shipping address','Please wait while we attempt to validate your shipping address.', _progress, "md");
-				_fakeWaitProgress();
-
-				var $off = $scope.$on('dialogs.wait.complete', function(){
-					var dlg = dialogs.create('views/includes/addess_validation.tpl.html','customDialogCtrl2',$scope.shipping,'md');
-					dlg.result.then(function(data){
-						_reset($scope.status)
-						$scope.status.billing.isOpen = true;
-						$off();
-					});
-				});
-
-			} else if (n && $scope.account){
-				console.info("I am here!!!");
-				// 
-				$scope.status.creditcard.isOpen = true;
-
-			}
-		});
-		$scope.$watch("myform.billingForm.$valid", function(n, o){
-			if (n && !$scope.account){
-				if($scope.foo.sameAsShipping){
-					_reset($scope.status);
-					$scope.status.creditcard.isOpen = true;
-				} else {
-					dialogs.wait('Validating billing address','Please wait while we attempt to validate your billing address.', _progress, "md");
-					_fakeWaitProgress();
-
-					var $off = $scope.$on('dialogs.wait.complete', function(){
-						var dlg = dialogs.create('views/includes/addess_validation.tpl.html','customDialogCtrl2', $scope.billing,'md');
-						dlg.result.then(function(data){
-							_reset($scope.status)
-							$scope.status.creditcard.isOpen = true;
-							$off();
-						});
-					});
-				}
-			}
-		});
-		
-	}, 500);
-
-	var _fakeWaitProgress = function(){
+	function _fakeWaitProgress(){
 		$timeout(function(){
 			if(_progress < 100){
 				_progress += 25;
@@ -231,7 +153,7 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 				$rootScope.$broadcast('dialogs.wait.complete');
 			}
 		},700);
-	};
+	}
 
 	function _reset(arr){
 		_.each(arr, function(item){
@@ -243,35 +165,83 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 		return which === $scope.status.isOpen;
 	}
 
-	$scope.$on("AGE-VERIFICATION", _setAgeVerification);
 
 	function _setAgeVerification(evt, data){
 		$scope.isUnderAge = data;
-
 		$scope.myform.creditcard.$setValidity("isValid", !$scope.isUnderAge);
-
 	}
 
-	$scope.$watch("myform.confirm.$valid", function(n,o){
+	function _init(){
+		$scope.$on("AGE-VERIFICATION", _setAgeVerification);
+		$timeout(function(){
+			$scope.$watch("myform.shippingForm.$valid", function(n, o){
+				if (n && !$scope.account){
+					dialogs.wait('Validating shipping address','Please wait while we attempt to validate your shipping address.', _progress, "md");
+					_fakeWaitProgress();
 
-		if ($scope.myform.confirm.$valid && $scope.myform.confirm.$dirty){
-			if (n){
-				var d = new Date($scope.birthday.year, $scope.birthday.month, $scope.birthday.day);
-				if(_isOfAge(d)){
-					console.info("old enough");
-					$scope.$emit("AGE-VERIFICATION", false);
-				} else {
-					console.info("too young");
-					$scope.$emit("AGE-VERIFICATION", true);
+					var $off = $scope.$on('dialogs.wait.complete', function(){
+						var dlg = dialogs.create('views/includes/addess_validation.tpl.html','customDialogCtrl2',$scope.shipping,'md');
+						dlg.result.then(function(data){
+							_reset($scope.status)
+							$scope.status.billing.isOpen = true;
+							$off();
+						});
+					});
+
+				} else if (n && $scope.account){
+					console.info("I am here!!!");
+					// 
+					$scope.status.creditcard.isOpen = true;
+
 				}
-			}
-		}
-	});
+			});
+			$scope.$watch("myform.billingForm.$valid", function(n, o){
+				if (n && !$scope.account){
+					if($scope.foo.sameAsShipping){
+						_reset($scope.status);
+						$scope.status.creditcard.isOpen = true;
+					} else {
+						dialogs.wait('Validating billing address','Please wait while we attempt to validate your billing address.', _progress, "md");
+						_fakeWaitProgress();
 
+						var $off = $scope.$on('dialogs.wait.complete', function(){
+							var dlg = dialogs.create('views/includes/addess_validation.tpl.html','customDialogCtrl2', $scope.billing,'md');
+							dlg.result.then(function(data){
+								_reset($scope.status)
+								$scope.status.creditcard.isOpen = true;
+								$off();
+							});
+						});
+					}
+				}
+			});
+			$scope.$watch("myform.confirm.$valid", function(n,o){
+				if ($scope.myform.confirm.$valid && $scope.myform.confirm.$dirty){
+					if (n){
+						var d = new Date($scope.birthday.year, $scope.birthday.month, $scope.birthday.day);
+						if(_isOfAge(d)){
+							console.info("old enough");
+							$scope.$emit("AGE-VERIFICATION", false);
+						} else {
+							console.info("too young");
+							$scope.$emit("AGE-VERIFICATION", true);
+						}
+					}
+				}
+			});
+
+			$scope.myform.creditcard.$setValidity("isValid", false);
+
+		}, 150);
+	}
+
+	
 	function _isOfAge(birthday) { // birthday is a date
 	    var ageDifMs = Date.now() - birthday.getTime();
 	    var ageDate = new Date(ageDifMs); // miliseconds from epoch
 	    return Math.abs(ageDate.getUTCFullYear() - 1970) >= 21;
 	}
+
+	_init();
 
 });

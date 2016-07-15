@@ -6,13 +6,13 @@
 
 		<uib-accordion close-others="oneAtATime">
 
-			<div ng-show="status.login.isOpen" style="margin-bottom: 5px;">
-				<uib-accordion-group is-open="status.login.isOpen" tab-index=0>
+			<div ng-if="status.login.isOpen" style="margin-bottom: 5px;">
+				<uib-accordion-group is-open="status.login.isOpen" tab-index=0 template-url="views/includes/accordian_group.tpl.html">
 					<uib-accordion-heading>Log In</uib-accordion-heading>
 					<form name="login" novalidate>
 						<div class="form-group">
 							<label for="username">Email address</label>
-							<input type="email" class="form-control" id="username" ng-model="foo.username" placeholder="Email" name="username" ng-required="status.login.isOpen">
+							<input focus type="email" class="form-control" id="username" ng-model="foo.username" placeholder="Email" name="username" ng-required="status.login.isOpen">
 						</div>
 						<div class="form-group">
 							<label for="password">Password</label>
@@ -23,8 +23,8 @@
 					</form>
 				</uib-accordion-group>
 			</div>
-
-			<uib-accordion-group is-open="status.shipping.isOpen" tab-index=0>
+			<p><em >Don't have an account? Just fill out the form and we will create it for you!</em></p>
+			<uib-accordion-group is-open="status.shipping.isOpen" tab-index=0 template-url="views/includes/accordian_group.tpl.html">
 				<form name="shippingForm" novalidate>
 					<uib-accordion-heading><span ng-show="myform.shippingForm.$invalid">1.</span><span ng-show="myform.shippingForm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Shipping Address</uib-accordion-heading>
 
@@ -51,7 +51,7 @@
 				</form>
 			</uib-accordion-group>
 
-			<uib-accordion-group is-open="status.billing.isOpen" tab-index=12>
+			<uib-accordion-group is-open="status.billing.isOpen" tab-index=12 template-url="views/includes/accordian_group.tpl.html">
 				<form name="billingForm" novalidate>
 					<uib-accordion-heading><span ng-show="myform.billingForm.$invalid">2.</span><span ng-show="myform.billingForm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Billing Address</uib-accordion-heading>
 					<div class="row">
@@ -67,7 +67,7 @@
 				</form>
 			</uib-accordion-group>
 
-			<uib-accordion-group is-open="status.creditcard.isOpen" tab-index=30>
+			<uib-accordion-group is-open="status.creditcard.isOpen" tab-index=30 template-url="views/includes/accordian_group.tpl.html">
 				<uib-accordion-heading><span ng-show="myform.creditcard.$invalid">3.</span><span ng-show="myform.creditcard.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Credit Card</uib-accordion-heading>
 
 				<div class="row">
