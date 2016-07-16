@@ -30,6 +30,11 @@ body {
 	.has-error .form-control {
 		border: 2px solid red;
 	}
+
+	.has-success .form-control {
+		border: 2px solid green;
+	}
+
 	.form-inline.confirm .form-control {
 		width:100%
 	}
