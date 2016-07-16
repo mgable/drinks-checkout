@@ -18,8 +18,6 @@ angular.module("checkoutApp").controller('customDialogCtrl2',function($scope,$ui
 	}; // end done
 	
 	$scope.hitEnter = function(evt){
-		console.info("checking key");
-		console.info(evt);
 		if(angular.equals(evt.keyCode,13)){
 			$uibModalInstance.close($scope.data);
 		}
@@ -51,24 +49,17 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 	$scope.birthday = {};
 	$scope.address = {"shipping": "", "billing": ""};
 	$scope.creditcarddisplay = "";
+	$scope.loginName = "John";
 
-	var account = {
-			"firstname": "John",
-			"lastname": "Smith",
-			"street1": "123 Main Street",
-			"city": "Cooltown",
-			"state": "CA",
-			"zip": "90401",
-			"email": "test@test.com",
-			"phone": "123-123-1234",
-			"creditcardnumber": "4929609396476895",
-			"securitycode": "123",
-			"expirationmonth": "02",
-			"expirationyear": "2017"
-
-		},
+	var account = _makeAccountData("John", "Smith","123 Main Street",null,"Cooltown","CA","90401","test@test.com","123-123-1234","4929609396476895","123","02","2017"),
+		account1 = _makeAccountData("John", "Smith", "7656 First Street NE", null, "Ventura", "CA", "90002", "jsmith@yahoo.com", "312-259-6582", null, null, null, null),
+		account2 = _makeAccountData("Joann", "Smith", "205 Tenth Street", "Unit 1", "San Francisco", "CA", "91100", "j_smith09@gmail.com", "321-321-4321", null, null, null, null),
 		_progress = 0;
 
+	$scope.altAddresses = [{name: _makeDifferentAddress(account), account: account}, {name: _makeDifferentAddress(account1),  account: account1}, {name:_makeDifferentAddress(account2), account: account2}];
+
+	console.info($scope.altAddresses);
+	$scope.alternative = $scope.altAddresses[0];
 	
 	$scope.submitLogin = function(){
 		$scope.billing = $scope.shipping = account;
@@ -118,6 +109,34 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 		if (!$scope.missingInformation){
 			$scope.success = true;
 		}
+	}
+
+	$scope.repopulate = function (address){
+		$scope.shipping = address.account;
+		$scope.address.shipping = _makeAddress("shipping");
+	}
+
+	$scope.addNewAddress = function(){
+		$scope.shipping = {};
+		$scope.account = false;
+	}
+
+	function _makeAccountData(fname, lname ,street1, street2, city, state, zip, email, phone, cc, cvv, month, year){
+		return {
+			"firstname": fname,
+			"lastname": lname,
+			"street1": street1,
+			"street2": street2,
+			"city": city,
+			"state": state,
+			"zip": zip,
+			"email": email,
+			"phone": phone,
+			"creditcardnumber": cc,
+			"securitycode": cvv,
+			"expirationmonth": month,
+			"expirationyear": year
+		};
 	}
 
 	function _validNumber(creditcardnumber){
@@ -180,6 +199,10 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 
 	function _makeAddress(type){
 		return $scope[type].firstname + "&nbsp;" + $scope[type].lastname + "&nbsp;...&nbsp;" + $scope[type].city + ",&nbsp;" + $scope[type].state + "&nbsp;" + $scope[type].zip;
+	}
+
+	function _makeDifferentAddress(addressObj){
+		return addressObj.firstname + " " + addressObj.lastname  + " " + addressObj.street1  + " " +  addressObj.city  + " " + addressObj.state  + " " + addressObj.zip;
 	}
 
 	function _init(){
@@ -252,7 +275,7 @@ angular.module("checkoutApp").controller("MainCtrl", function($scope){
 
 			$scope.myform.creditcard.$setValidity("isValid", false);
 
-		}, 150);
+		}, 350);
 	}
 
 	

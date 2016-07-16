@@ -2,7 +2,9 @@
 	<ng-form name="myform">
 <!-- 
 	<pre>{{myform.shippingForm["zip"] | json}}</pre> -->
-		<h5>Don't like filling out forms? <a ng-click="status.shipping.isOpen = false; status.login.isOpen = true" style="cursor:pointer;">Log in</a> to pre-fill this form.</h5>
+		<h5 ng-show="!account">Don't like filling out forms? <a ng-click="status.shipping.isOpen = false; status.login.isOpen = true" style="cursor:pointer;">Log in</a> to pre-fill this form.</h5>
+
+		<h5 ng-show="account">Welcome back, {{loginName}}.</h5>
 
 		<uib-accordion close-others="oneAtATime">
 
@@ -23,13 +25,13 @@
 					</form>
 				</uib-accordion-group>
 			</div>
-			<p><em >Don't have an account? Just fill out the form and we will create it for you!</em></p>
+			<p ng-show="!account" ><em >Don't have an account? Just fill out the form and we will create it for you!</em></p>
 			<uib-accordion-group is-open="status.shipping.isOpen" tab-index=0 template-url="views/includes/accordian_group.tpl.html">
 				<form name="shippingForm" novalidate>
 					<uib-accordion-heading><span ng-show="myform.shippingForm.$invalid">1.</span><span ng-show="myform.shippingForm.$valid" class="glyphicon glyphicon-ok-circle ok" aria-hidden="true"></span> Shipping Address<span ng-show="address.shipping" class="pull-right address"><span ng-bind-html="address.shipping" style="padding-right: 10px"></span><span class="edit text-info">&nbsp;edit</span></span></uib-accordion-heading>
 
 					<div class="row">
-						<div class="col-sm-4">
+						<div class="col-sm-6">
 						<label style="margin-bottom:3px;">Gift Option</label>
 						 	<div class="checkbox" style="margin-top:0;">
 								<label>
@@ -42,8 +44,19 @@
 					<div class="row" ng-if="isGift">
 						<div class="col-sm-12">
 							<div class="form-group">
-						 		<textarea focus tabIndex="1" class="form-control" name="gift-text" style="width:100%" id="gift-text" placeholder="gift text here . . ."></textarea>
+						 		<textarea focus tabIndex="1" class="form-control" name="gift-text" style="width:100%" id="gift-text" placeholder="gift text here . . ." tabIndex="1"></textarea>
 						 	</div>
+						</div>
+					</div>
+
+					<div class="row" ng-if="account">
+						<div class="col-sm-12">
+							<div class="form-group" ng-class="{'has-error': hasError('state'), 'has-success': hasSuccess('state')}">
+								<label for="state">Choose a different address</label>
+								<select class="form-control" ng-change="repopulate(alternative)" ng-options="option.name for option in altAddresses" ng-model="alternative" name="selectAltShipping" id="selectAltShipping" tabIndex="1">
+								</select>
+								<p style="margin-top:5px"><a ng-click="addNewAddress()"><span class="glyphicon glyphicon-plus-sign"></span> Add new shipping address</a></p>
+							</div>
 						</div>
 					</div>
 
@@ -73,7 +86,7 @@
 				<div class="row">
 					<form name="creditcard" novalidate>
 
-						<iframe frameborder="0" name="vantiv-payframe" src="views/includes/creditcardiframe.html" width="100%" height="260px" id="iframe1" marginheight="0" frameborder="0" ng-class="{'error': missingInformation}"></iframe>
+						<iframe frameborder="0" name="vantiv-payframe" src="views/includes/creditcardiframe.html" width="100%" height="280px" id="iframe1" scrolling="no" style="overflow:visible;" marginheight="0" frameborder="0" ng-class="{'error': missingInformation}"></iframe>
 					</form>
 				</div>
 <!-- 	 	<pre>{{myform.confirm["birthday-day"] | json}}</pre> -->
